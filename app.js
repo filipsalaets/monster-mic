@@ -28,18 +28,22 @@ const TEST_MODE = new URLSearchParams(location.search).has('test');
 // It wires the player through its effects to `out`, and returns the list of
 // effect nodes it created, so we can throw them away when the next voice plays.
 // Tip: change the numbers here to tune each voice.
+//
+// About windowSize (used by PitchShift): the pitch shifter chops the sound into
+// overlapping slices this many seconds long. Small slices (0.03–0.05) sound
+// gravelly/fluttery; big slices (0.15–0.2) sound smooth but echoey. 0.1 is the middle.
 
 function helium(player, out) {
-  // Pitch up 8 semitones, same speed. A small window sounds cleaner for high voices.
-  const shift = new Tone.PitchShift({ pitch: 8, windowSize: 0.05 });
+  // Pitch up 8 semitones, same speed.
+  const shift = new Tone.PitchShift({ pitch: 8, windowSize: 0.1 });
   player.chain(shift, out);
   return [shift];
 }
 
 function monster(player, out) {
   // Pitch down 7 semitones, then a bit of growl (distortion).
-  const shift = new Tone.PitchShift({ pitch: -7, windowSize: 0.1 });
-  const growl = new Tone.Distortion({ distortion: 0.3, wet: 0.5 });
+  const shift = new Tone.PitchShift({ pitch: -7, windowSize: 0.15 });
+  const growl = new Tone.Distortion({ distortion: 0.2, wet: 0.35 });
   player.chain(shift, growl, out);
   return [shift, growl];
 }
@@ -74,7 +78,7 @@ async function caveEcho(player, out) {
 
 function alien(player, out) {
   // Slightly higher voice plus a fast wobble (vibrato).
-  const shift = new Tone.PitchShift({ pitch: 3, windowSize: 0.05 });
+  const shift = new Tone.PitchShift({ pitch: 3, windowSize: 0.1 });
   const wobble = new Tone.Vibrato({ frequency: 7, depth: 0.35 });
   player.chain(shift, wobble, out);
   return [shift, wobble];
