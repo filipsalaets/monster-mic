@@ -1,0 +1,65 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <!-- Makes the page fit the phone screen instead of a zoomed-out desktop page -->
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <meta name="theme-color" content="#5b21d6">
+  <title>Monster Mic</title>
+  <link rel="stylesheet" href="style.css">
+  <!-- Tone.js: the sound-effects library. Pinned to an exact version so it never changes under us.
+       "defer" = download now, run after the page is built (and in this order: Tone first, then app.js). -->
+  <script defer src="https://cdnjs.cloudflare.com/ajax/libs/tone/15.0.4/Tone.js"></script>
+  <script defer src="app.js"></script>
+</head>
+<body>
+
+  <!-- START SCREEN: covers everything until the first tap.
+       That first tap unlocks audio (browser rule) and asks for the microphone. -->
+  <div id="welcome" class="overlay">
+    <div class="overlay-box">
+      <div id="welcome-emoji" class="big-emoji">👾🎤</div>
+      <h1>Monster Mic</h1>
+      <button id="start-btn" class="start-btn">Tap to let Monster Mic hear you</button>
+      <div id="welcome-msg" class="welcome-msg" hidden></div>
+    </div>
+  </div>
+
+  <main id="app">
+    <h1 class="title">Monster Mic 👾</h1>
+
+    <!-- THE BIG RECORD BUTTON: press and hold to record, let go to stop.
+         The SVG circle around it is the progress ring that fills up over 15 seconds. -->
+    <div class="record-wrap">
+      <button id="record-btn" class="record-btn" aria-label="Hold to record">
+        <svg class="ring" viewBox="0 0 120 120" aria-hidden="true">
+          <circle class="ring-bg" cx="60" cy="60" r="54"/>
+          <circle id="ring-fg" class="ring-fg" cx="60" cy="60" r="54"/>
+        </svg>
+        <span id="record-face" class="record-face">🎤</span>
+      </button>
+      <p id="record-hint" class="record-hint">👆 Hold to talk</p>
+    </div>
+
+    <!-- THE SIX VOICE CARDS. data-voice links each card to an effect in app.js.
+         --c is the card's colour (a CSS variable used in style.css). -->
+    <div id="cards" class="cards locked">
+      <button class="card" data-voice="helium"    style="--c:#ffd23f"><span class="emoji">🎈</span><span class="name">Helium</span></button>
+      <button class="card" data-voice="monster"   style="--c:#3ddc84"><span class="emoji">👹</span><span class="name">Monster</span></button>
+      <button class="card" data-voice="robot"     style="--c:#4cc9f0"><span class="emoji">🤖</span><span class="name">Robot</span></button>
+      <button class="card" data-voice="backwards" style="--c:#ff8c42"><span class="emoji">⏪</span><span class="name">Backwards</span></button>
+      <button class="card" data-voice="cave"      style="--c:#b388ff"><span class="emoji">🦇</span><span class="name">Cave echo</span></button>
+      <button class="card" data-voice="alien"     style="--c:#ff5fa2"><span class="emoji">👽</span><span class="name">Alien</span></button>
+    </div>
+
+    <button id="again-btn" class="again-btn" disabled aria-label="Play again">🔁</button>
+
+    <!-- Only shown on iPhone/iPad (app.js decides) -->
+    <p id="silent-hint" class="silent-hint" hidden>🔇 No sound? Check your silent switch</p>
+
+    <!-- Only shown when the page is opened with ?test (for testing without a microphone) -->
+    <button id="test-btn" class="test-btn" hidden>🧪 Make a test clip</button>
+  </main>
+
+</body>
+</html>

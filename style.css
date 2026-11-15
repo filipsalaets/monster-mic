@@ -1,0 +1,151 @@
+/* ===== Monster Mic – style.css =====
+   Mobile-first: everything is designed for a phone held upright. */
+
+* { box-sizing: border-box; }
+
+html, body {
+  margin: 0;
+  min-height: 100%;
+  font-family: "Arial Rounded MT Bold", "Nunito", system-ui, -apple-system, sans-serif;
+  color: #fff;
+  background: linear-gradient(160deg, #5b21d6 0%, #c026d3 55%, #ff5fa2 100%) fixed;
+  background-color: #5b21d6;
+  /* Kid-proofing: no text selection, no iOS long-press "Copy / Look Up" bubble,
+     no grey flash when tapping, no double-tap zoom. */
+  -webkit-user-select: none;
+  user-select: none;
+  -webkit-touch-callout: none;
+  -webkit-tap-highlight-color: transparent;
+  touch-action: manipulation;
+}
+
+button {
+  font: inherit;
+  color: inherit;
+  border: none;
+  cursor: pointer;
+  -webkit-user-select: none;
+  user-select: none;
+  -webkit-touch-callout: none;
+}
+
+main {
+  max-width: 480px;
+  margin: 0 auto;
+  /* env(safe-area-inset-*) keeps things clear of the iPhone notch and home bar */
+  padding: calc(12px + env(safe-area-inset-top)) 16px calc(16px + env(safe-area-inset-bottom));
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 14px;
+}
+
+.title {
+  margin: 4px 0 0;
+  font-size: 1.6rem;
+  text-shadow: 0 3px 0 rgba(0,0,0,.2);
+}
+
+/* ===== Big record button ===== */
+.record-wrap { display: flex; flex-direction: column; align-items: center; gap: 6px; }
+
+.record-btn {
+  position: relative;
+  width: clamp(130px, 40vw, 170px);
+  aspect-ratio: 1;
+  border-radius: 50%;
+  background: #ff3b5c;
+  box-shadow: 0 8px 0 #b3123a, 0 12px 24px rgba(0,0,0,.25);
+  display: grid;
+  place-items: center;
+  touch-action: none;           /* holding the button must not scroll the page */
+  transition: transform .1s, background .2s;
+}
+.record-btn:active, .record-btn.recording { transform: translateY(6px); box-shadow: 0 2px 0 #b3123a, 0 4px 12px rgba(0,0,0,.25); }
+.record-btn.waiting   { background: #ffb020; }
+.record-btn.recording { background: #ff1744; animation: pulse 1s infinite; }
+.record-btn.working   { background: #9e9e9e; }
+
+.record-face { font-size: clamp(3rem, 14vw, 4.2rem); line-height: 1; font-weight: bold; pointer-events: none; }
+
+/* Progress ring: a circle outline whose visible length is controlled from app.js
+   with stroke-dashoffset (full length = empty ring, 0 = full ring). */
+.ring { position: absolute; inset: -8px; width: calc(100% + 16px); height: calc(100% + 16px); transform: rotate(-90deg); pointer-events: none; }
+.ring-bg { fill: none; stroke: rgba(255,255,255,.25); stroke-width: 6; }
+.ring-fg { fill: none; stroke: #fff; stroke-width: 6; stroke-linecap: round;
+           stroke-dasharray: 339.29; stroke-dashoffset: 339.29; }
+
+.record-hint { margin: 6px 0 0; font-size: 1.15rem; min-height: 1.4em; }
+
+/* ===== Voice cards: 2 columns x 3 rows ===== */
+.cards {
+  width: 100%;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 12px;
+  transition: opacity .3s;
+}
+.cards.locked { opacity: .45; }       /* greyed out until there is a recording */
+
+.card {
+  min-height: 120px;
+  border-radius: 24px;
+  background: var(--c);
+  color: #2b1055;
+  box-shadow: 0 6px 0 rgba(0,0,0,.22);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 4px;
+  transition: transform .08s;
+}
+.card:active { transform: translateY(4px) scale(.98); box-shadow: 0 2px 0 rgba(0,0,0,.22); }
+.card .emoji { font-size: 3.2rem; line-height: 1; pointer-events: none; }
+.card .name  { font-size: 1.1rem; font-weight: bold; pointer-events: none; }
+.card.playing { outline: 5px solid #fff; animation: wiggle .5s infinite alternate; }
+
+/* ===== Play again ===== */
+.again-btn {
+  width: 84px; height: 84px;
+  border-radius: 50%;
+  font-size: 2.6rem;
+  background: #fff;
+  box-shadow: 0 6px 0 rgba(0,0,0,.22);
+}
+.again-btn:disabled { opacity: .35; }
+
+.silent-hint { margin: 0; font-size: .9rem; opacity: .85; text-align: center; }
+.test-btn { padding: 10px 16px; border-radius: 12px; background: rgba(255,255,255,.25); }
+
+/* ===== Start / problem screen ===== */
+.overlay {
+  position: fixed; inset: 0; z-index: 10;
+  display: grid; place-items: center;
+  padding: 24px;
+  background: linear-gradient(160deg, #5b21d6, #c026d3);
+}
+.overlay[hidden] { display: none; }
+.overlay-box { max-width: 380px; text-align: center; }
+.overlay h1 { font-size: 2.2rem; margin: 8px 0 24px; }
+.big-emoji { font-size: 5rem; animation: wiggle 1s infinite alternate; }
+.start-btn {
+  width: 100%;
+  padding: 26px 20px;
+  border-radius: 28px;
+  font-size: 1.4rem;
+  font-weight: bold;
+  background: #ffd23f;
+  color: #2b1055;
+  box-shadow: 0 8px 0 #c79a00;
+  animation: pulse 1.6s infinite;
+}
+.start-btn:disabled { opacity: .6; animation: none; }
+.welcome-msg { margin-top: 22px; font-size: 1.05rem; line-height: 1.45; background: rgba(0,0,0,.2); padding: 14px; border-radius: 16px; text-align: left; }
+.welcome-msg p { margin: 0 0 8px; }
+
+/* ===== Little animations ===== */
+@keyframes pulse  { 50% { filter: brightness(1.15); } }
+@keyframes wiggle { from { transform: rotate(-3deg); } to { transform: rotate(3deg); } }
+@keyframes shake  { 25% { transform: translateX(-8px); } 75% { transform: translateX(8px); } }
+.shake { animation: shake .15s 3; }
